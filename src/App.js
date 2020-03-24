@@ -3,7 +3,7 @@ import './App.scss';
 console.clear();
 
 const InnerBox = ({ x, y }) => (
-  <div className="inner-box-container">
+  <div>
     <div
       style={{
         height: '5px',
@@ -17,7 +17,17 @@ const InnerBox = ({ x, y }) => (
   </div>
 );
 
-class OuterGrid extends React.Component {
+const PositionButton = ({ onClick }) => (
+  <div
+    onClick={onClick}
+    style={{
+      'background-color': 'lightgray',
+      cursor: 'pointer',
+    }}
+  />
+);
+
+class Container extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,10 +38,15 @@ class OuterGrid extends React.Component {
 
   render() {
     return (
-      <div className="outer-grid">
+      <div
+        style={{
+          display: 'grid',
+          'grid-template-columns': '5px 50px 5px',
+          'grid-template-rows': '5px 50px 5px',
+        }}
+      >
         <div />
-        <div
-          className="grid-button"
+        <PositionButton
           onClick={e => {
             if (this.state.y > 0) {
               this.setState({ y: this.state.y - 1 });
@@ -39,8 +54,7 @@ class OuterGrid extends React.Component {
           }}
         />
         <div />
-        <div
-          className="grid-button"
+        <PositionButton
           onClick={e => {
             if (this.state.x > 0) {
               this.setState({ x: this.state.x - 1 });
@@ -48,8 +62,7 @@ class OuterGrid extends React.Component {
           }}
         />
         <InnerBox x={this.state.x} y={this.state.y} />
-        <div
-          className="grid-button"
+        <PositionButton
           onClick={e => {
             if (this.state.x < 42) {
               this.setState({ x: this.state.x + 1 });
@@ -57,8 +70,7 @@ class OuterGrid extends React.Component {
           }}
         />
         <div />
-        <div
-          className="grid-button"
+        <PositionButton
           onClick={e => {
             if (this.state.y < 42) {
               this.setState({ y: this.state.y + 1 });
@@ -71,7 +83,7 @@ class OuterGrid extends React.Component {
 }
 
 function App() {
-  return <OuterGrid />;
+  return <Container />;
 }
 
 export default App;
