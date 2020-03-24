@@ -2,12 +2,17 @@ import React from 'react';
 import './App.scss';
 console.clear();
 
-const InnerBox = ({ x, y }) => (
+const perimeterDimensionPx = 200;
+const objectDimensionPx = 50;
+const moveButtonWidthPx = 100;
+const moveDimensionPx = 20;
+
+const Perimeter = ({ x, y }) => (
   <div>
     <div
       style={{
-        height: '5px',
-        width: '5px',
+        height: `${objectDimensionPx}px`,
+        width: `${objectDimensionPx}px`,
         backgroundColor: '#ff00bf',
         position: 'relative',
         left: x,
@@ -17,7 +22,7 @@ const InnerBox = ({ x, y }) => (
   </div>
 );
 
-const PositionButton = ({ onClick }) => (
+const MoveButton = ({ onClick }) => (
   <div
     onClick={onClick}
     style={{
@@ -31,8 +36,8 @@ class Container extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      x: 40,
-      y: 40,
+      x: (perimeterDimensionPx - objectDimensionPx) / 2,
+      y: (perimeterDimensionPx - objectDimensionPx) / 2,
     };
   }
 
@@ -41,40 +46,42 @@ class Container extends React.Component {
       <div
         style={{
           display: 'grid',
-          'grid-template-columns': '5px 50px 5px',
-          'grid-template-rows': '5px 50px 5px',
+          'grid-template-columns': `${moveButtonWidthPx}px ${perimeterDimensionPx}px ${moveButtonWidthPx}px`,
+          'grid-template-rows': `${moveButtonWidthPx}px ${perimeterDimensionPx}px ${moveButtonWidthPx}px`,
         }}
       >
         <div />
-        <PositionButton
+        <MoveButton
           onClick={e => {
-            if (this.state.y > 0) {
-              this.setState({ y: this.state.y - 1 });
-            }
+            this.setState({ y: Math.max(0, this.state.y - moveDimensionPx) });
           }}
         />
         <div />
-        <PositionButton
+        <MoveButton
           onClick={e => {
-            if (this.state.x > 0) {
-              this.setState({ x: this.state.x - 1 });
-            }
+            this.setState({ x: Math.max(0, this.state.x - moveDimensionPx) });
           }}
         />
-        <InnerBox x={this.state.x} y={this.state.y} />
-        <PositionButton
+        <Perimeter x={this.state.x} y={this.state.y} />
+        <MoveButton
           onClick={e => {
-            if (this.state.x < 42) {
-              this.setState({ x: this.state.x + 1 });
-            }
+            this.setState({
+              x: Math.min(
+                this.state.x + moveDimensionPx,
+                perimeterDimensionPx - objectDimensionPx
+              ),
+            });
           }}
         />
         <div />
-        <PositionButton
+        <MoveButton
           onClick={e => {
-            if (this.state.y < 42) {
-              this.setState({ y: this.state.y + 1 });
-            }
+            this.setState({
+              y: Math.min(
+                this.state.y + moveDimensionPx,
+                perimeterDimensionPx - objectDimensionPx
+              ),
+            });
           }}
         />
       </div>
