@@ -14,12 +14,13 @@ const PositionedObject = ({ x, y, dimension }) => (
   />
 );
 
-const MoveButton = ({ onClick }) => (
+const MoveButton = ({ onClick, active }) => (
   <div
     onClick={onClick}
     style={{
       backgroundColor: 'lightgray',
       cursor: 'pointer',
+      ...(active && { border: '10px ridge #80bfff' }),
     }}
   />
 );
@@ -33,26 +34,32 @@ const ObjectBoxContainer = ({
   const initialPosition = (perimeterDimensionPx - objectDimensionPx) / 2;
   const [x, setX] = useState(initialPosition);
   const [y, setY] = useState(initialPosition);
+  const [activeButton, setActiveButton] = useState(null);
 
   const resetInitialPosition = function() {
     setX(initialPosition);
     setY(initialPosition);
+    setActiveButton(null);
   };
   const moveUp = function() {
     setY(Math.max(0, y - moveDimensionPx));
+    setActiveButton('up');
   };
   const moveLeft = function() {
     setX(Math.max(0, x - moveDimensionPx));
+    setActiveButton('left');
   };
   const moveRight = function() {
     setX(
       Math.min(x + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
     );
+    setActiveButton('right');
   };
   const moveDown = function() {
     setY(
       Math.min(y + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
     );
+    setActiveButton('down');
   };
   const Space = () => <div />;
 
@@ -65,15 +72,15 @@ const ObjectBoxContainer = ({
       }}
     >
       <Space />
-      <MoveButton onClick={moveUp} />
+      <MoveButton onClick={moveUp} active={activeButton === 'up'} />
       <Space />
-      <MoveButton onClick={moveLeft} />
+      <MoveButton onClick={moveLeft} active={activeButton === 'left'} />
       <div onClick={resetInitialPosition}>
         <PositionedObject x={x} y={y} dimension={objectDimensionPx} />
       </div>
-      <MoveButton onClick={moveRight} />
+      <MoveButton onClick={moveRight} active={activeButton === 'right'} />
       <Space />
-      <MoveButton onClick={moveDown} />
+      <MoveButton onClick={moveDown} active={activeButton === 'down'} />
     </div>
   );
 };
@@ -83,7 +90,7 @@ function App() {
     <ObjectBoxContainer
       perimeterDimensionPx={200}
       objectDimensionPx={50}
-      moveButtonWidthPx={100}
+      moveButtonWidthPx={50}
       moveDimensionPx={20}
     />
   );
