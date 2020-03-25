@@ -14,18 +14,7 @@ const PositionedObject = ({ x, y, dimension }) => (
   />
 );
 
-const MoveButton = ({ onClick, active }) => (
-  <div
-    onClick={onClick}
-    style={{
-      backgroundColor: 'lightgray',
-      cursor: 'pointer',
-      ...(active && { border: '10px ridge #80bfff' }),
-    }}
-  />
-);
-
-const ObjectBoxContainer = ({
+const PositionedObjectContainer = ({
   perimeterDimensionPx,
   objectDimensionPx,
   moveButtonWidthPx,
@@ -36,32 +25,43 @@ const ObjectBoxContainer = ({
   const [y, setY] = useState(initialPosition);
   const [activeButton, setActiveButton] = useState(null);
 
-  const resetInitialPosition = function() {
-    setX(initialPosition);
-    setY(initialPosition);
-    setActiveButton(null);
-  };
-  const moveUp = function() {
-    setY(Math.max(0, y - moveDimensionPx));
-    setActiveButton('up');
-  };
-  const moveLeft = function() {
-    setX(Math.max(0, x - moveDimensionPx));
-    setActiveButton('left');
-  };
-  const moveRight = function() {
-    setX(
-      Math.min(x + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
-    );
-    setActiveButton('right');
-  };
-  const moveDown = function() {
-    setY(
-      Math.min(y + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
-    );
-    setActiveButton('down');
+  const moveActions = {
+    reset: function() {
+      setX(initialPosition);
+      setY(initialPosition);
+    },
+    up: function() {
+      setY(Math.max(0, y - moveDimensionPx));
+    },
+    left: function() {
+      setX(Math.max(0, x - moveDimensionPx));
+    },
+    right: function() {
+      setX(
+        Math.min(x + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
+      );
+    },
+    down: function() {
+      setY(
+        Math.min(y + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
+      );
+    },
   };
   const Space = () => <div />;
+
+  const MoveButton = ({ direction }) => (
+    <div
+      onClick={() => {
+        moveActions[direction]();
+        setActiveButton(direction);
+      }}
+      style={{
+        backgroundColor: 'lightgray',
+        cursor: 'pointer',
+        ...(activeButton === direction && { border: '10px ridge #80bfff' }),
+      }}
+    />
+  );
 
   return (
     <div
@@ -72,22 +72,27 @@ const ObjectBoxContainer = ({
       }}
     >
       <Space />
-      <MoveButton onClick={moveUp} active={activeButton === 'up'} />
+      <MoveButton direction="up" />
       <Space />
-      <MoveButton onClick={moveLeft} active={activeButton === 'left'} />
-      <div onClick={resetInitialPosition}>
+      <MoveButton direction="left" />
+      <div
+        onClick={() => {
+          moveActions.reset();
+          setActiveButton(null);
+        }}
+      >
         <PositionedObject x={x} y={y} dimension={objectDimensionPx} />
       </div>
-      <MoveButton onClick={moveRight} active={activeButton === 'right'} />
+      <MoveButton direction="right" />
       <Space />
-      <MoveButton onClick={moveDown} active={activeButton === 'down'} />
+      <MoveButton direction="down" />
     </div>
   );
 };
 
 function App() {
   return (
-    <ObjectBoxContainer
+    <PositionedObjectContainer
       perimeterDimensionPx={200}
       objectDimensionPx={50}
       moveButtonWidthPx={50}
