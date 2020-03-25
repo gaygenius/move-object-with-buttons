@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import reactLogo from './logo.svg';
 import otherLogo from './otherLogo.svg';
+import './App.css';
 console.clear();
 
 const PositionedObject = ({ x, y, children }) => {
@@ -107,7 +108,13 @@ const ColorfulSquare = ({ dimensionPx, color }) => (
 );
 
 const DimensionedLogo = ({ logo, dimensionPx }) => (
-  <img src={logo} alt="logo" height={dimensionPx} width={dimensionPx} />
+  <img
+    src={logo}
+    className="App-logo"
+    alt="logo"
+    height={dimensionPx}
+    width={dimensionPx}
+  />
 );
 
 function App() {
