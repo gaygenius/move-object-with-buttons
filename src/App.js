@@ -1,96 +1,92 @@
-import React from 'react';
-import './App.scss';
+import React, { useState } from 'react';
 console.clear();
 
-const perimeterDimensionPx = 200;
-const objectDimensionPx = 50;
-const moveButtonWidthPx = 100;
-const moveDimensionPx = 20;
-
-const Perimeter = ({ x, y }) => (
-  <div>
-    <div
-      style={{
-        height: `${objectDimensionPx}px`,
-        width: `${objectDimensionPx}px`,
-        backgroundColor: '#ff00bf',
-        position: 'relative',
-        left: x,
-        top: y,
-      }}
-    />
-  </div>
+const PositionedObject = ({ x, y, dimension }) => (
+  <div
+    style={{
+      height: `${dimension}px`,
+      width: `${dimension}px`,
+      backgroundColor: '#ff00bf',
+      position: 'relative',
+      left: x,
+      top: y,
+    }}
+  />
 );
 
 const MoveButton = ({ onClick }) => (
   <div
     onClick={onClick}
     style={{
-      'background-color': 'lightgray',
+      backgroundColor: 'lightgray',
       cursor: 'pointer',
     }}
   />
 );
 
-class Container extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      x: (perimeterDimensionPx - objectDimensionPx) / 2,
-      y: (perimeterDimensionPx - objectDimensionPx) / 2,
-    };
-  }
+const ObjectBoxContainer = ({
+  perimeterDimensionPx,
+  objectDimensionPx,
+  moveButtonWidthPx,
+  moveDimensionPx,
+}) => {
+  const initialPosition = (perimeterDimensionPx - objectDimensionPx) / 2;
+  const [x, setX] = useState(initialPosition);
+  const [y, setY] = useState(initialPosition);
 
-  render() {
-    return (
-      <div
-        style={{
-          display: 'grid',
-          'grid-template-columns': `${moveButtonWidthPx}px ${perimeterDimensionPx}px ${moveButtonWidthPx}px`,
-          'grid-template-rows': `${moveButtonWidthPx}px ${perimeterDimensionPx}px ${moveButtonWidthPx}px`,
-        }}
-      >
-        <div />
-        <MoveButton
-          onClick={e => {
-            this.setState({ y: Math.max(0, this.state.y - moveDimensionPx) });
-          }}
-        />
-        <div />
-        <MoveButton
-          onClick={e => {
-            this.setState({ x: Math.max(0, this.state.x - moveDimensionPx) });
-          }}
-        />
-        <Perimeter x={this.state.x} y={this.state.y} />
-        <MoveButton
-          onClick={e => {
-            this.setState({
-              x: Math.min(
-                this.state.x + moveDimensionPx,
-                perimeterDimensionPx - objectDimensionPx
-              ),
-            });
-          }}
-        />
-        <div />
-        <MoveButton
-          onClick={e => {
-            this.setState({
-              y: Math.min(
-                this.state.y + moveDimensionPx,
-                perimeterDimensionPx - objectDimensionPx
-              ),
-            });
-          }}
-        />
-      </div>
+  const resetInitialPosition = function() {
+    setX(initialPosition);
+    setY(initialPosition);
+  };
+  const moveUp = function() {
+    setY(Math.max(0, y - moveDimensionPx));
+  };
+  const moveLeft = function() {
+    setX(Math.max(0, x - moveDimensionPx));
+  };
+  const moveRight = function() {
+    setX(
+      Math.min(x + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
     );
-  }
-}
+  };
+  const moveDown = function() {
+    setY(
+      Math.min(y + moveDimensionPx, perimeterDimensionPx - objectDimensionPx)
+    );
+  };
+  const Space = () => <div />;
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `${moveButtonWidthPx}px ${perimeterDimensionPx}px ${moveButtonWidthPx}px`,
+        gridTemplateRows: `${moveButtonWidthPx}px ${perimeterDimensionPx}px ${moveButtonWidthPx}px`,
+      }}
+    >
+      <Space />
+      <MoveButton onClick={moveUp} />
+      <Space />
+      <MoveButton onClick={moveLeft} />
+      <div onClick={resetInitialPosition}>
+        <PositionedObject x={x} y={y} dimension={objectDimensionPx} />
+      </div>
+      <MoveButton onClick={moveRight} />
+      <Space />
+      <MoveButton onClick={moveDown} />
+    </div>
+  );
+};
 
 function App() {
-  return <Container />;
+  return (
+    <ObjectBoxContainer
+      perimeterDimensionPx={200}
+      objectDimensionPx={50}
+      moveButtonWidthPx={100}
+      moveDimensionPx={20}
+    />
+  );
 }
 
 export default App;
