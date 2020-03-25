@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
+import reactLogo from './logo.svg';
+import otherLogo from './otherLogo.svg';
 console.clear();
 
-const PositionedObject = ({ x, y, dimension }) => (
-  <div
-    style={{
-      height: `${dimension}px`,
-      width: `${dimension}px`,
-      backgroundColor: '#ff00bf',
-      position: 'relative',
-      left: x,
-      top: y,
-    }}
-  />
-);
+const PositionedObject = ({ x, y, children }) => {
+  return (
+    <div
+      style={{
+        position: 'relative',
+        left: x,
+        top: y,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const PositionedObjectContainer = ({
   perimeterDimensionPx,
-  objectDimensionPx,
   moveButtonWidthPx,
   moveDimensionPx,
+  objectDimensionPx,
+  children,
 }) => {
   const initialPosition = (perimeterDimensionPx - objectDimensionPx) / 2;
   const [x, setX] = useState(initialPosition);
@@ -81,7 +85,9 @@ const PositionedObjectContainer = ({
           setActiveButton(null);
         }}
       >
-        <PositionedObject x={x} y={y} dimension={objectDimensionPx} />
+        <PositionedObject x={x} y={y}>
+          {children}
+        </PositionedObject>
       </div>
       <MoveButton direction="right" />
       <Space />
@@ -90,14 +96,56 @@ const PositionedObjectContainer = ({
   );
 };
 
+const ColorfulSquare = ({ dimensionPx, color }) => (
+  <div
+    style={{
+      height: `${dimensionPx}px`,
+      width: `${dimensionPx}px`,
+      backgroundColor: color,
+    }}
+  />
+);
+
+const DimensionedLogo = ({ logo, dimensionPx }) => (
+  <img src={logo} alt="logo" height={dimensionPx} width={dimensionPx} />
+);
+
 function App() {
+  const objectDimensionPx = 50;
+  const objects = [
+    <ColorfulSquare dimensionPx={objectDimensionPx} color="#ff00bf" />,
+    <DimensionedLogo logo={reactLogo} dimensionPx={objectDimensionPx} />,
+    <DimensionedLogo logo={otherLogo} dimensionPx={objectDimensionPx} />,
+  ];
+  const [objectIndex, setObjectIndex] = useState(0);
   return (
-    <PositionedObjectContainer
-      perimeterDimensionPx={200}
-      objectDimensionPx={50}
-      moveButtonWidthPx={50}
-      moveDimensionPx={20}
-    />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      }}
+    >
+      <PositionedObjectContainer
+        perimeterDimensionPx={200}
+        moveButtonWidthPx={50}
+        moveDimensionPx={20}
+        objectDimensionPx={objectDimensionPx}
+      >
+        {objects[objectIndex]}
+      </PositionedObjectContainer>
+      <button
+        onClick={() => setObjectIndex((objectIndex + 1) % objects.length)}
+        style={{
+          margin: '50px',
+          padding: '10px',
+          fontWeight: '700',
+          fontSize: 'x-large',
+        }}
+      >
+        Switch
+      </button>
+    </div>
   );
 }
 
