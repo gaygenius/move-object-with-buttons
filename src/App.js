@@ -63,7 +63,7 @@ const PositionedObjectContainer = ({
       style={{
         backgroundColor: 'lightgray',
         cursor: 'pointer',
-        ...(activeButton === direction && { border: '10px ridge #80bfff' }),
+        ...(activeButton === direction && { border: '4px ridge #80bfff' }),
       }}
     />
   );
@@ -135,39 +135,41 @@ const OtherLogo = ({ dimensionPx }) => (
 );
 
 function App() {
-  const objectDimensionPx = 50;
+  const objectDimensionPx = 25;
   const objects = [
     <OtherLogo dimensionPx={objectDimensionPx} />,
     <ColorfulSquare dimensionPx={objectDimensionPx} color="#ff00bf" />,
     <DimensionedLogo logo={reactLogo} dimensionPx={objectDimensionPx} />,
   ];
-  const [objectIndex, setObjectIndex] = useState(0);
+  const [objectIndex, setObjectIndex] = React.useState(0);
+  const switchObject = () => setObjectIndex((objectIndex + 1) % objects.length);
   return (
     <div
       style={{
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'flex-start',
       }}
     >
+      <button
+        onClick={switchObject}
+        style={{
+          margin: '10px',
+          padding: '4px',
+          fontWeight: '500',
+          fontSize: 'medium',
+        }}
+      >
+        Switch Object
+      </button>
       <PositionedObjectContainer
-        perimeterDimensionPx={200}
-        moveButtonWidthPx={50}
-        moveDimensionPx={20}
+        perimeterDimensionPx={100}
+        moveButtonWidthPx={25}
+        moveDimensionPx={10}
         objectDimensionPx={objectDimensionPx}
       >
         {objects[objectIndex]}
       </PositionedObjectContainer>
-      <button
-        onClick={() => setObjectIndex((objectIndex + 1) % objects.length)}
-        style={{
-          margin: '50px',
-          padding: '10px',
-          fontWeight: '700',
-          fontSize: 'x-large',
-        }}
-      >
-        Switch
-      </button>
     </div>
   );
 }
